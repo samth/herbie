@@ -1,7 +1,7 @@
 #lang info
 
 (define collection "egg-herbie")
-(define version "2.2")
+(define version "2.3")
 
 (define pkg-desc "Racket bindings for simplifying math expressions using egg")
 (define pkg-authors `("Oliver Flatt" "Brett Saiki" "Pavel Panchekha"))

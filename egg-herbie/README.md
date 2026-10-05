@@ -13,5 +13,9 @@ The Rust side is implemented in standard Rust using the `egg` library.
 The `math` module contains math-specific implementation work while the
 `lib` module contains code to interface with Racket.
 
-The main Herbie repository's Github Actions build and publish versions
-of the Racket package (including pre-built Rust libraries).
+The main Herbie repository's GitHub Actions build and publish
+platform-specific packages containing the native Rust library.
+
+The local package keeps a development copy of `main.rkt` for `make install`.
+Release archives are built by `package-native.rkt` and contain only the
+native library. The published `egg-herbie` package owns the Racket module.

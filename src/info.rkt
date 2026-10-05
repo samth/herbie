@@ -23,7 +23,7 @@
                              "rackunit-lib"
                              "web-server-lib"
                              ("rival3" #:version "1.0")
-                             ("egg-herbie" #:version "2.2")
+                             ("egg-herbie" #:version "2.3")
                              ("rival" #:version "2.3")
                              ("fpbench" #:version "2.0.3")
                              "fmt"))

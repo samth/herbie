@@ -14,15 +14,19 @@ jobs:
           - os: windows-latest
             os-name: windows
             arch: x64
+            package-name: egg-herbie-windows
           - os: ubuntu-20.04  # keep old for glibc compatability
             os-name: ubuntu
             arch: x64
+            package-name: egg-herbie-linux
           - os: macos-latest
             os-name: macOS-m1
             arch: arm64
+            package-name: egg-herbie-macosm1
           - os: macos-15-intel
             os-name: macOS
             arch: x64
+            package-name: egg-herbie-osx
 
     runs-on: ${{ matrix.os }}
 
@@ -44,12 +48,14 @@ jobs:
         run: cargo build --release --manifest-path=egg-herbie/Cargo.toml
       
       - name: Create tarball
-        run: raco pkg create --format zip egg-herbie
+        run: |
+          racket egg-herbie/package-native.rkt "${{ matrix.package-name }}" egg-herbie-native-stage
+          raco pkg create --format zip egg-herbie-native-stage
 
       - name: Rename tarballs
         run: |
-          mv egg-herbie.zip egg-herbie-${{ matrix.os-name }}.zip
-          mv egg-herbie.zip.CHECKSUM egg-herbie-${{ matrix.os-name }}.zip.CHECKSUM
+          mv egg-herbie-native-stage.zip egg-herbie-${{ matrix.os-name }}.zip
+          mv egg-herbie-native-stage.zip.CHECKSUM egg-herbie-${{ matrix.os-name }}.zip.CHECKSUM
 
       - name: Upload pre-built egg-herbie
         uses: actions/upload-artifact@v4
