@@ -1,5 +1,7 @@
 .PHONY: help install egg-herbie nightly index start-server deploy coverage
 
+EGG_HERBIE_WRAPPER_SOURCE ?= egg-herbie
+
 help:
 	@echo "Type 'make install' to install Herbie"
 	@echo "Then type 'racket -l herbie web' to run it."
@@ -27,7 +29,13 @@ egg-herbie:
 	raco pkg remove --force --no-docs egg-herbie-windows && echo "Warning: uninstalling egg-herbie and reinstalling local version" || :
 	raco pkg remove --force --no-docs egg-herbie-osx && echo "Warning: uninstalling egg-herbie and reinstalling local version" || :
 	raco pkg remove --force --no-docs egg-herbie-macosm1 && echo "Warning: uninstalling egg-herbie and reinstalling local version" || :
-	raco pkg install ./egg-herbie
+	@set -e; native_pkg=$$(racket egg-herbie/package-native.rkt); \
+	  native_stage=$$(mktemp -d); \
+	  trap 'rm -rf "$$native_stage"' EXIT; \
+	  racket egg-herbie/package-native.rkt "$$native_stage/native"; \
+	  (cd "$$native_stage" && raco pkg create --format zip native); \
+	  raco pkg install --batch --no-docs --name "$$native_pkg" "$$native_stage/native.zip"; \
+	  raco pkg install --batch --no-docs --auto --name egg-herbie "$(EGG_HERBIE_WRAPPER_SOURCE)"
 
 egglog-herbie:
 	cargo install --locked --git "https://github.com/egraphs-good/egglog-experimental" egglog-experimental
